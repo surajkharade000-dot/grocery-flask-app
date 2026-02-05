@@ -1,0 +1,11 @@
+<form method="POST">
+    <input name="name" placeholder="Category Name">
+    <button>Add</button>
+</form>
+
+{% for c in categories %}
+    <p>
+        {{ c.name }} —
+        <a href="/admin/products/{{ c.id }}">Manage Products</a>
+    </p>
+{% endfor %}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Products</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="navbar">
+    <b>🛒 Shivam Super Market</b>
+    <div>
+        <a href="/cart">Cart</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+{% for category in categories %}
+    <h2>{{ category.name }}</h2>
+    <div class="products">
+        {% for p in category.products %}
+        <div class="card">
+            <img src="{{ p.image }}" alt="">
+            <h4>{{ p.name }}</h4>
+            <p>₹{{ p.price }}</p>
+            <form method="POST" action="/add-to-cart/{{ p.id }}">
+                <button>Add to Cart</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+<h2>{{ category.name }}</h2>
+
+<form method="POST">
+    <input name="name" placeholder="Product Name">
+    <input name="brand" placeholder="Brand">
+    <input name="price" placeholder="Price">
+    <input name="image" placeholder="Image URL">
+    <button>Add</button>
+</form>
+
+{% for p in products %}
+    <p>{{ p.name }} - ₹{{ p.price }}</p>
+{% endfor %}

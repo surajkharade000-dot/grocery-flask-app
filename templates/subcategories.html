@@ -1,0 +1,12 @@
+<h2>Sub Categories - {{ category.name }}</h2>
+
+<form method="post">
+  <input name="name" placeholder="Sub Category Name">
+  <button>Add</button>
+</form>
+
+<hr>
+
+{% for s in subs %}
+  {{ s.name }} <br>
+{% endfor %}

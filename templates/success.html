@@ -1,0 +1,38 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<h2>Order Successful</h2>
+<a href="/products">Shop More</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Successful</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+        <div><strong>🛒 Shivam Super Market</strong></div>
+        <div>
+            <a href="/products">Products</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="container">
+        <div class="form-box" style="text-align:center;">
+            <h2>✅ Order Successful</h2>
+            <p style="margin: 15px 0;">
+                Thank you for shopping with <b>Shivam Super Market</b> 🙏  
+                <br>Your order has been placed successfully.
+            </p>
+
+            <a href="/products">
+                <button>🛍️ Shop More</button>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
