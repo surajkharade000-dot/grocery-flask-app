@@ -133,16 +133,11 @@ def products():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    category_id = request.args.get("category")
-    if category_id:
-        products = Product.query.filter_by(category_id=category_id).all()
-    else:
-        products = Product.query.all()
+    products = Product.query.all()
 
     return render_template(
         "products.html",
-        products=products,
-        categories=Category.query.all()
+        products=products
     )
 
 
