@@ -1,17 +1,109 @@
-<h2>Customer Login</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
 
-<form method="post">
-  <input name="email" placeholder="Email" required><br>
-  <input name="password" type="password" placeholder="Password" required><br>
-  <button type="submit">Login</button>
-</form>
+    <style>
+        body{
+            margin:0;
+            padding:0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #4e54c8, #8f94fb);
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
 
-<a href="/register">Register</a>
+        .login-box{
+            background:#fff;
+            width:350px;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.2);
+            text-align:center;
+        }
 
-<hr style="margin:20px 0;">
+        .login-box h2{
+            margin-bottom:20px;
+            color:#333;
+        }
 
-<p style="font-size:14px;">Are you an Admin?</p>
+        .login-box input{
+            width:100%;
+            padding:10px;
+            margin:10px 0;
+            border:1px solid #ccc;
+            border-radius:5px;
+            font-size:14px;
+        }
 
-<a href="/admin">
-  <button type="button">Admin Login</button>
-</a>
+        .login-box button{
+            width:100%;
+            padding:10px;
+            margin-top:10px;
+            background:#4e54c8;
+            color:#fff;
+            border:none;
+            border-radius:5px;
+            font-size:15px;
+            cursor:pointer;
+        }
+
+        .login-box button:hover{
+            background:#3c40a0;
+        }
+
+        .register-link{
+            display:block;
+            margin-top:15px;
+            font-size:14px;
+            text-decoration:none;
+            color:#4e54c8;
+        }
+
+        hr{
+            margin:25px 0;
+        }
+
+        .admin-btn{
+            background:#333;
+        }
+
+        .admin-btn:hover{
+            background:#000;
+        }
+
+        .admin-text{
+            font-size:13px;
+            color:#555;
+            margin-bottom:8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <h2>Customer Login</h2>
+
+    <form method="post">
+        <input name="email" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="/register" class="register-link">Create New Account</a>
+
+    <hr>
+
+    <p class="admin-text">Are you an Admin?</p>
+
+    <a href="/admin">
+        <button type="button" class="admin-btn">Admin Login</button>
+    </a>
+</div>
+
+</body>
+</html>
