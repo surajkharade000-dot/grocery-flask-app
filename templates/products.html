@@ -15,10 +15,8 @@
 </div>
 
 <div class="container">
-{% for category in categories %}
-    <h2>{{ category.name }}</h2>
     <div class="products">
-        {% for p in category.products %}
+        {% for p in products %}
         <div class="card">
             <img src="{{ p.image }}" alt="">
             <h4>{{ p.name }}</h4>
@@ -29,7 +27,6 @@
         </div>
         {% endfor %}
     </div>
-{% endfor %}
 </div>
 
 </body>
