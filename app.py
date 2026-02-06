@@ -154,8 +154,6 @@ def cart():
     total = sum(i["price"] for i in session.get("cart", []))
     return render_template("cart.html", cart=session["cart"], total=total)
 
-
-# 🔹🔹🔹 INVOICE FEATURE ADD 🔹🔹🔹
 @app.route("/place-order", methods=["POST"])
 def place_order():
     order = Order(
@@ -185,7 +183,17 @@ def invoice():
         return redirect(url_for("products"))
 
     return render_template("invoice.html", order=session["last_order"])
-# 🔹🔹🔹 INVOICE FEATURE END 🔹🔹🔹
+    # ================= CONTACT PAGE =================
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    if request.method == "POST":
+        name = request.form["name"]
+        email = request.form["email"]
+        message = request.form["message"]
+        # future ला DB / email add करू शकतो
+        return render_template("contact.html", success=True)
+
+    return render_template("contact.html")
 
 
 # ================= ADMIN =================
