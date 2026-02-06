@@ -155,6 +155,7 @@ def cart():
     return render_template("cart.html", cart=session["cart"], total=total)
 
 
+# 🔹🔹🔹 INVOICE FEATURE ADD 🔹🔹🔹
 @app.route("/place-order", methods=["POST"])
 def place_order():
     order = Order(
@@ -165,8 +166,26 @@ def place_order():
     )
     db.session.add(order)
     db.session.commit()
+
+    # invoice साठी session मध्ये save
+    session["last_order"] = {
+        "user": session["user"],
+        "items": session["cart"],
+        "total": sum(i["price"] for i in session["cart"]),
+        "payment": request.form["payment"]
+    }
+
     session["cart"] = []
-    return render_template("success.html")
+    return redirect(url_for("invoice"))
+
+
+@app.route("/invoice")
+def invoice():
+    if "last_order" not in session:
+        return redirect(url_for("products"))
+
+    return render_template("invoice.html", order=session["last_order"])
+# 🔹🔹🔹 INVOICE FEATURE END 🔹🔹🔹
 
 
 # ================= ADMIN =================
@@ -227,7 +246,6 @@ def add_product():
         return redirect(url_for("admin"))
 
     if request.method == "POST":
-        # CATEGORY
         cat_name = request.form["category"].strip()
         category = Category.query.filter_by(name=cat_name).first()
         if not category:
@@ -235,7 +253,6 @@ def add_product():
             db.session.add(category)
             db.session.commit()
 
-        # SUBCATEGORY
         sub_name = request.form["subcategory"].strip()
         subcategory = SubCategory.query.filter_by(
             name=sub_name,
@@ -249,10 +266,8 @@ def add_product():
             db.session.add(subcategory)
             db.session.commit()
 
-        # IMAGE
         filename = request.form["image"]
 
-        # PRODUCT
         product = Product(
             name=request.form["name"],
             price=float(request.form["price"]),
