@@ -255,9 +255,7 @@ def add_product():
             db.session.commit()
 
         # IMAGE
-        file = request.files["image"]
-        filename = file.filename
-        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        filename = request.form["image"]
 
         # PRODUCT
         product = Product(
