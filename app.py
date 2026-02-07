@@ -15,26 +15,11 @@ db = SQLAlchemy(app)
 
 # ================= PREDEFINED CATEGORIES =================
 PREDEFINED_CATEGORIES = [
-    "Grains & Pulses",
-    "Spices",
-    "Cooking Oil & Ghee",
-    "Sugar & Sweeteners",
-    "Beverages",
-    "Dairy Products",
-    "Fruits",
-    "Vegetables",
-    "Snacks & Biscuits",
-    "Instant Food",
-    "Bakery Items",
-    "Frozen Foods",
-    "Dry Fruits & Nuts",
-    "Personal Care",
-    "Household Cleaning",
-    "Baby Care",
-    "Pet Food",
-    "Stationery",
-    "Pooja Items",
-    "Others"
+    "Grains & Pulses", "Spices", "Cooking Oil & Ghee", "Sugar & Sweeteners",
+    "Beverages", "Dairy Products", "Fruits", "Vegetables",
+    "Snacks & Biscuits", "Instant Food", "Bakery Items", "Frozen Foods",
+    "Dry Fruits & Nuts", "Personal Care", "Household Cleaning",
+    "Baby Care", "Pet Food", "Stationery", "Pooja Items", "Others"
 ]
 
 # ================= MODELS =================
@@ -133,11 +118,9 @@ def products():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    products = Product.query.all()
-
     return render_template(
         "products.html",
-        products=products
+        products=Product.query.all()
     )
 
 
@@ -154,6 +137,7 @@ def cart():
     total = sum(i["price"] for i in session.get("cart", []))
     return render_template("cart.html", cart=session["cart"], total=total)
 
+
 @app.route("/place-order", methods=["POST"])
 def place_order():
     order = Order(
@@ -165,34 +149,21 @@ def place_order():
     db.session.add(order)
     db.session.commit()
 
-    # invoice साठी session मध्ये save
-    session["last_order"] = {
-        "user": session["user"],
-        "items": session["cart"],
-        "total": sum(i["price"] for i in session["cart"]),
-        "payment": request.form["payment"]
-    }
-
     session["cart"] = []
-    return redirect(url_for("invoice"))
+    return redirect(url_for("payment_qr"))
 
 
-@app.route("/invoice")
-def invoice():
-    if "last_order" not in session:
-        return redirect(url_for("products"))
+@app.route("/payment-qr")
+def payment_qr():
+    return render_template("payment_qr.html")
 
-    return render_template("invoice.html", order=session["last_order"])
-    # ================= CONTACT PAGE =================
+
+# ================= CONTACT =================
+
 @app.route("/contact", methods=["GET", "POST"])
 def contact():
     if request.method == "POST":
-        name = request.form["name"]
-        email = request.form["email"]
-        message = request.form["message"]
-        # future ला DB / email add करू शकतो
         return render_template("contact.html", success=True)
-
     return render_template("contact.html")
 
 
@@ -274,12 +245,10 @@ def add_product():
             db.session.add(subcategory)
             db.session.commit()
 
-        filename = request.form["image"]
-
         product = Product(
             name=request.form["name"],
             price=float(request.form["price"]),
-            image=filename,
+            image=request.form["image"],
             category_id=category.id,
             subcategory_id=subcategory.id
         )
@@ -288,10 +257,7 @@ def add_product():
 
         return redirect(url_for("admin_dashboard"))
 
-    return render_template(
-        "add_product.html",
-        categories=PREDEFINED_CATEGORIES
-    )
+    return render_template("add_product.html", categories=PREDEFINED_CATEGORIES)
 
 
 @app.route("/admin/delete-product/<int:id>")
