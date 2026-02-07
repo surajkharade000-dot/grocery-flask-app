@@ -270,6 +270,21 @@ def delete_product(id):
 @app.route("/admin/orders")
 def admin_orders():
     return render_template("admin_orders.html", orders=Order.query.all())
+@app.route("/admin/edit-product/<int:id>", methods=["GET", "POST"])
+def edit_product(id):
+    if not session.get("admin"):
+        return redirect(url_for("admin"))
+
+    product = Product.query.get_or_404(id)
+
+    if request.method == "POST":
+        product.name = request.form["name"]
+        product.price = float(request.form["price"])
+        product.image = request.form["image"]
+        db.session.commit()
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("edit_product.html", product=product)
 
 
 # ================= RUN =================
