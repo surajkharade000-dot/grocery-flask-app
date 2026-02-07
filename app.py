@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -63,6 +64,8 @@ class Order(db.Model):
     items = db.Column(db.String(500))
     total = db.Column(db.Float)
     payment_method = db.Column(db.String(50))
+    status = db.Column(db.String(20), default="Pending")
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
 
 # ================= INIT =================
@@ -118,10 +121,7 @@ def products():
     if "user" not in session:
         return redirect(url_for("login"))
 
-    return render_template(
-        "products.html",
-        products=Product.query.all()
-    )
+    return render_template("products.html", products=Product.query.all())
 
 
 @app.route("/add-to-cart/<int:id>", methods=["POST"])
@@ -144,7 +144,8 @@ def place_order():
         user_name=session["user"],
         items=", ".join(i["name"] for i in session["cart"]),
         total=sum(i["price"] for i in session["cart"]),
-        payment_method=request.form["payment"]
+        payment_method=request.form["payment"],
+        status="Pending"
     )
     db.session.add(order)
     db.session.commit()
@@ -156,15 +157,6 @@ def place_order():
 @app.route("/payment-qr")
 def payment_qr():
     return render_template("payment_qr.html")
-
-
-# ================= CONTACT =================
-
-@app.route("/contact", methods=["GET", "POST"])
-def contact():
-    if request.method == "POST":
-        return render_template("contact.html", success=True)
-    return render_template("contact.html")
 
 
 # ================= ADMIN =================
@@ -195,28 +187,27 @@ def admin_dashboard():
     )
 
 
-@app.route("/admin/categories", methods=["GET", "POST"])
-def admin_categories():
-    if request.method == "POST":
-        db.session.add(Category(name=request.form["name"]))
-        db.session.commit()
-    return render_template("categories.html", categories=Category.query.all())
+@app.route("/admin/orders")
+def admin_orders():
+    if not session.get("admin"):
+        return redirect(url_for("admin"))
+
+    return render_template("admin_orders.html", orders=Order.query.all())
 
 
-@app.route("/admin/subcategories/<int:id>", methods=["GET", "POST"])
-def admin_subcategories(id):
-    if request.method == "POST":
-        db.session.add(SubCategory(
-            name=request.form["name"],
-            category_id=id
-        ))
-        db.session.commit()
+@app.route("/admin/order-complete/<int:id>")
+def order_complete(id):
+    order = Order.query.get_or_404(id)
+    order.status = "Delivered"
+    db.session.commit()
+    return redirect(url_for("admin_orders"))
 
-    return render_template(
-        "subcategories.html",
-        category=Category.query.get(id),
-        subs=SubCategory.query.filter_by(category_id=id).all()
-    )
+
+@app.route("/admin/order-delete/<int:id>")
+def order_delete(id):
+    db.session.delete(Order.query.get_or_404(id))
+    db.session.commit()
+    return redirect(url_for("admin_orders"))
 
 
 @app.route("/admin/add-product", methods=["GET", "POST"])
@@ -225,34 +216,31 @@ def add_product():
         return redirect(url_for("admin"))
 
     if request.method == "POST":
-        cat_name = request.form["category"].strip()
-        category = Category.query.filter_by(name=cat_name).first()
+        category = Category.query.filter_by(name=request.form["category"]).first()
         if not category:
-            category = Category(name=cat_name)
+            category = Category(name=request.form["category"])
             db.session.add(category)
             db.session.commit()
 
-        sub_name = request.form["subcategory"].strip()
         subcategory = SubCategory.query.filter_by(
-            name=sub_name,
+            name=request.form["subcategory"],
             category_id=category.id
         ).first()
         if not subcategory:
             subcategory = SubCategory(
-                name=sub_name,
+                name=request.form["subcategory"],
                 category_id=category.id
             )
             db.session.add(subcategory)
             db.session.commit()
 
-        product = Product(
+        db.session.add(Product(
             name=request.form["name"],
             price=float(request.form["price"]),
             image=request.form["image"],
             category_id=category.id,
             subcategory_id=subcategory.id
-        )
-        db.session.add(product)
+        ))
         db.session.commit()
 
         return redirect(url_for("admin_dashboard"))
@@ -260,16 +248,6 @@ def add_product():
     return render_template("add_product.html", categories=PREDEFINED_CATEGORIES)
 
 
-@app.route("/admin/delete-product/<int:id>")
-def delete_product(id):
-    db.session.delete(Product.query.get(id))
-    db.session.commit()
-    return redirect(url_for("admin_dashboard"))
-
-
-@app.route("/admin/orders")
-def admin_orders():
-    return render_template("admin_orders.html", orders=Order.query.all())
 @app.route("/admin/edit-product/<int:id>", methods=["GET", "POST"])
 def edit_product(id):
     if not session.get("admin"):
@@ -285,6 +263,13 @@ def edit_product(id):
         return redirect(url_for("admin_dashboard"))
 
     return render_template("edit_product.html", product=product)
+
+
+@app.route("/admin/delete-product/<int:id>")
+def delete_product(id):
+    db.session.delete(Product.query.get_or_404(id))
+    db.session.commit()
+    return redirect(url_for("admin_dashboard"))
 
 
 # ================= RUN =================
