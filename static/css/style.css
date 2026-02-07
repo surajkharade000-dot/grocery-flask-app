@@ -125,3 +125,12 @@ body {
     flex-direction: column;
   }
 }
+.contact-footer {
+    text-align: center;
+    padding: 25px;
+    margin-top: 40px;
+    background: #111;
+    color: #fff;
+    font-size: 14px;
+}
+
