@@ -198,4 +198,34 @@ body {
 .product-card .btn:hover {
   background: #3730a3;
 }
+.qty-box {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
 
+.qty-box button {
+    padding: 4px 10px;
+    cursor: pointer;
+}
+
+.qty-box input {
+    width: 40px;
+    text-align: center;
+}
+
+.cart-link {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: red;
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
