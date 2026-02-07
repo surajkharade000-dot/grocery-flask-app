@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment</title>
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            padding: 40px;
+        }
+        img {
+            width: 250px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Order Placed Successfully ✅</h2>
+    <p>Please scan the QR code to complete payment</p>
+
+    <!-- QR CODE IMAGE -->
+    <img src="{{ url_for('static', filename='qr.png') }}" alt="Payment QR">
+
+    <p>Thank you for shopping with us 🙏</p>
+
+    <a href="/products">Continue Shopping</a>
+
+</body>
+</html>
