@@ -20,7 +20,7 @@ PREDEFINED_CATEGORIES = [
     "Beverages", "Dairy Products", "Fruits", "Vegetables",
     "Snacks & Biscuits", "Instant Food", "Bakery Items", "Frozen Foods",
     "Dry Fruits & Nuts", "Personal Care", "Household Cleaning",
-    "Baby Care", "Pet Food", "Stationery", "Pooja Items", "Others"
+    "Baby Care", "Pet Food", "Stationery", "Pooja Items","Rice", "Others"
 ]
 
 # ================= MODELS =================
